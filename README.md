@@ -1,59 +1,75 @@
-# MyAngularStorybookProject
+# Storybook Documentation for Angular Components
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
+## Overview
+This document demonstrates how to use **Storybook** with Angular components. Storybook provides an interactive UI for testing and validating component behavior under different scenarios.
 
-## Development server
+## Setting Up Storybook for Angular
+To integrate **Storybook** into your Angular project, follow these steps:
 
-To start a local development server, run:
+1. Install Storybook:
+   ```sh
+   npx storybook@latest init
+   ```
+2. Verify that Storybook has been added to your project by running:
+   ```sh
+   npm run storybook
+   ```
+3. Create a new Storybook file for your component inside `src/stories/component.stories.ts`.
 
-```bash
-ng serve
+## Storybook Configuration
+The Storybook configuration for an Angular component follows this structure:
+
+```typescript
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
+import { within, fireEvent } from '@storybook/test';
+import { CommonModule } from '@angular/common';
+import { MyComponent } from './my-component.component';
+
+export default {
+  title: 'Components/MyComponent',
+  component: MyComponent,
+  decorators: [
+    moduleMetadata({
+      imports: [CommonModule],
+    }),
+  ],
+} as Meta<MyComponent>;
+
+const Template: StoryFn<MyComponent> = (args: MyComponent) => ({
+  component: MyComponent,
+  props: args,
+});
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+## Storybook Scenarios
+### Default Scenario
+This scenario renders the component without any modifications.
+```typescript
+export const Default = Template.bind({});
+Default.args = {};
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Interactive Scenario
+This scenario demonstrates user interactions and testing.
+```typescript
+export const Interactive = Template.bind({});
+Interactive.args = {};
+Interactive.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
 
-```bash
-ng generate --help
+  // Example interaction
+  const button = await canvas.getByRole('button', { name: /click me/i });
+  await fireEvent.click(button);
+};
 ```
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
+## Running Storybook
+To launch Storybook and test the components in different scenarios, run:
+```sh
+npm run storybook
 ```
+This will open an interactive UI where you can validate component functionality.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Conclusion
+Storybook provides a structured way to test UI components in isolation. The provided scenarios help ensure components behave correctly under different user interactions. 🚀
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
